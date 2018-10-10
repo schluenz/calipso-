@@ -1,0 +1,7 @@
+version: '1'
+
+services:
+  crystfel:
+    build: use_cases/crystfel.deploy
+    image: crystfel:v0.7.0
+
