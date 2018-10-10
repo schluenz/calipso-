@@ -5,5 +5,5 @@ The repository provides recipes for building the Calipso+ use case in various pa
 The singularity recipes are triggering automated builds on singularity hub - where possible.
 
 Available singularity container:
-# invoking crystfel
+** invoking crystfel **
 singularity shell shub://schluenz/calipso-:crystfel
