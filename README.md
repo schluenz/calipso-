@@ -6,5 +6,5 @@ The singularity recipes are triggering automated builds on singularity hub - whe
 
 #### Available singularity container:
 * invoking crystfel
-  * singularity shell shub://schluenz/calipso-:crystfel
+  * singularity shell shub://schluenz/calipsoplus:crystfel
 
