@@ -1,4 +1,4 @@
-# calipso-
+# calipso+
 Use Cases for Calipso+ Project
 
 The repository provides recipes for building the Calipso+ use case in various packaging formats.
