@@ -8,3 +8,8 @@ The singularity recipes are triggering automated builds on singularity hub - whe
 * invoking crystfel
   * singularity shell shub://schluenz/calipsoplus:crystfel
 
+#### Available docker container:
+* invoking crystfel
+  * docker run -t -u `id -u`:`id -g` --userns=host --security-opt no-new-privileges -i schluenz/calipsoplus:crystfel
+  * bind mount volumes for example ... --mount type=bind,source=/data,target=/data
+  
