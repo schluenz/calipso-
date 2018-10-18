@@ -10,7 +10,7 @@ The singularity/docker recipes are triggering automated builds on singularity/do
 
 #### Available docker container:
 * invoking crystfel
-  * docker run -t -u `id -u`:`id -g` --userns=host --security-opt no-new-privileges -i schluenz/calipsoplus:crystfel
+  * docker run -t -u $(id -u):$(id -g) --userns=host --security-opt no-new-privileges -i schluenz/calipsoplus:crystfel
   * bind mount volumes for example ... --mount type=bind,source=/data,target=/data
   * pulling the crystfel container: docker pull schluenz/calipsoplus:crystfel
   
