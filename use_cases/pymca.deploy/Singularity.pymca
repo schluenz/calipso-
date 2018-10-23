@@ -7,11 +7,6 @@ Singularity Container for the PyMca package
 %apprun pymca
    exec /opt/anaconda/3/bin/pymca
 
-%setup 
-   mkdir -p ${SINGULARITY_ROOTFS}/usr/share/docs/
-   cp pymca-5.4.0.def ${SINGULARITY_ROOTFS}/usr/share/docs/pymca-5.4.0.def
-
-
 %labels
   org.label-schema.version  5.4.0
   org.label-schema.url      http://pymca.sourceforge.net/
@@ -23,9 +18,6 @@ Singularity Container for the PyMca package
 
 %environment
 export PATH=/opt/anaconda/3/bin:$PATH
-
-%files 
-  /beegfs/desy/user/schluenz/Singularity/PyMca-5.4.0/00README /
 
 %post
 #
@@ -46,8 +38,6 @@ conda install -y -c conda-forge fisx silx pyside libglu
 
 pip install pymca==5.4.0
 
-mkdir -p /usr/share/docs
-mv /00README /usr/share/docs/
 #
 #  Clean up
 #
