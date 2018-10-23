@@ -1,0 +1,55 @@
+Bootstrap: shub
+From: singularityhub/centos
+
+%help
+Singularity Container for the PyMca package
+
+%apprun pymca
+   exec /opt/anaconda/3/bin/pymca
+
+%setup 
+   mkdir -p ${SINGULARITY_ROOTFS}/usr/share/docs/
+   cp pymca-5.4.0.def ${SINGULARITY_ROOTFS}/usr/share/docs/pymca-5.4.0.def
+
+
+%labels
+  org.label-schema.version  5.4.0
+  org.label-schema.url      http://pymca.sourceforge.net/
+  org.label-schema.name     pymca
+  org.label-schema.vendor   calipso+
+  Version  5.4.0
+  Packager Calipso+
+  Author   Calipso+
+
+%environment
+export PATH=/opt/anaconda/3/bin:$PATH
+
+%files 
+  /beegfs/desy/user/schluenz/Singularity/PyMca-5.4.0/00README /
+
+%post
+#
+#  install base packages
+#
+yum install -y dbus dejavu-lgc-sans-fonts gedit unzip gzip tar pam libXt GConf2 gtk2 libXtst python xterm wget which curl mesa-libGLU-devel mesa-libGL
+yum install -y bzip2 hdf5 hdf5-devel gtk2-devel libpng-devel ncurses-devel fftw-devel gmp-devel mpfr-devel libmpc-devel autoconf automake m4
+yum groupinstall -y "Development tools"
+
+mkdir -p /TMP
+wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O /TMP/Anaconda3-5.3.0-Linux-x86_64.sh
+/bin/bash /TMP/Anaconda3-5.3.0-Linux-x86_64.sh -b -p /opt/anaconda/3
+
+export PATH=/opt/anaconda/3/bin:$PATH
+
+conda install -y numpy h5py matplotlib
+conda install -y -c conda-forge fisx silx pyside libglu 
+
+pip install pymca==5.4.0
+
+mkdir -p /usr/share/docs
+mv /00README /usr/share/docs/
+#
+#  Clean up
+#
+yum remove -y \*-devel
+rm -rf /TMP
