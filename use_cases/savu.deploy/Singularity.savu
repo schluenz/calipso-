@@ -1,0 +1,79 @@
+Bootstrap: docker
+From: docker-registry.diamond.ac.uk/diamond-apps/nvidia/cuda:9.0-devel-centos7
+
+%help
+Singularity Container for the SAVU package
+
+# add appdefs for various commands!
+%apprun savu
+   exec /root/miniconda/bin/savu
+
+%labels
+  Version  2.3.1
+  Packager Calipso+
+  Author   Calipso+
+  org.label-schema.version  2.3.1
+  org.label-schema.url      https://github.com/DiamondLightSource/Savu
+  org.label-schema.name     Savu
+  org.label-schema.vendor   calipso+
+  MAINTAINER Matthew Frost
+
+
+%environment
+export PATH=/root/miniconda/bin:/usr/lib64/openmpi3/bin:/usr/local/bin:/usr/local/cuda-9.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/lib64/openmpi3/lib:/usr/local/lib64:/usr/local/lib:/usr/local/cuda-9.0/lib64
+export MPI_HOME=/usr/lib64/openmpi3
+
+%post
+#
+#  install base packages
+#
+yum install -y dbus dejavu-lgc-sans-fonts gedit unzip gzip tar pam libXt GConf2 gtk2 libXtst python xterm wget which curl
+yum install -y bzip2 hdf5 hdf5-devel gtk2-devel libpng-devel ncurses-devel fftw-devel gmp-devel mpfr-devel libmpc-devel autoconf automake m4 openmpi3-devel
+yum groupinstall -y "Development tools"
+yum -y install mesa-libGL-devel mesa-libGLU-devel boost-devel
+
+#  
+# install fftw
+#
+mkdir -p /TMP
+export FFTW=3.3.7
+wget http://fftw.org/fftw-${FFTW}.tar.gz -O /TMP/fftw-${FFTW}.tar.gz
+pushd /TMP
+tar -xf fftw-${FFTW}.tar.gz
+/TMP/fftw-${FFTW}/configure --enable-threads --enable-shared --prefix=/usr/local && make /TMP/fftw-${FFTW}/ && make install /TMP/fftw-${FFTW}/
+/TMP/fftw-${FFTW}/configure --enable-threads --enable-shared --enable-float --prefix=/usr/local && make /TMP/fftw-${FFTW}/ && make install /TMP/fftw-${FFTW}/
+/TMP/fftw-${FFTW}/configure --enable-threads --enable-shared --enable-long-double --prefix=/usr/local && make /TMP/fftw-${FFTW}/ && make install /TMP/fftw-${FF
+TW}/
+popd
+#
+#   savu
+#
+wget https://github.com/DiamondLightSource/Savu/archive/v2.3.1.tar.gz -O /TMP/Savu-2.3.1.tar.gz
+pushd /TMP
+tar xf Savu-2.3.1.tar.gz
+pushd Savu-2.3.1
+# would have used a prefix but that failed... so leave it in /root/miniconda.... 
+export PATH=/root/miniconda/bin:/usr/lib64/openmpi3/bin:/usr/local/bin:/usr/local/cuda-9.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/lib64/openmpi3/lib:/usr/local/lib64:/usr/local/lib:/usr/local/cuda-9.0/lib64
+export MPI_HOME=/usr/lib64/openmpi3
+
+chmod +x install/2_3_1_install/savu_v2.3.1/savu_installer.sh
+perl -i -lne 'print $_;print "  savu_path=\${savu_path%/savu/__init__.py}" if(/savu_path=/);' install/2_3_1_install/savu_v2.3.1/savu_installer.sh 
+install/2_3_1_install/savu_v2.3.1/savu_installer.sh --no_prompts
+
+popd
+popd
+
+find /root -type d -exec chmod og+rx {} \;
+find /root -type f -executable -exec chmod og+rx {} \;
+
+#
+# dbus fix 
+#
+dbus-uuidgen > /var/lib/dbus/machine-id
+
+#
+#  Clean up
+#
+rm -rf /TMP
